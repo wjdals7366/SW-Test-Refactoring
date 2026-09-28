@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    {{>part/common}}
+    <title>Q/A 게시판</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@700&family=Quicksand:wght@700&display=swap" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="/pass/css/bbs.css">
+</head>
+
+
+<div id="main-container" class="d-flex justify-content-center quicksand nskr">
+    <div style="width:70%">
+        <div style="text-align:center; margin-top:30px;">
+            <strong style="font-size:50px">Q/A 게시판</strong>
+        </div>
+        <div class="w90" style="margin-top:50px;">
+            <div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>번호</th>
+                            <th>제목</th>
+                            <th>작성자</th>
+                            <th>작성일</th>
+                            <th>댓글수</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {{#bbsList}}
+                        <tr>
+                            <td>{{id}}</td>
+                            <td>
+                                <a href="/generalforum/bbs_view?bbs_id={{id}}">{{title}}
+                            </td>
+                            <td>{{user.userName}}</td>
+                            <td>{{Datetime}}</td>
+                            <td>{{comments.size}}</td>
+                        </tr>
+                    {{/bbsList}}
+                    </tbody>
+                </table>
+                <div style="text-align:right;">
+                    <a href="/generalforum/write" class="btn btn-outline-dark">글쓰기</a>
+                </div>
+                <div style="text-align:center; margin-top:40px;">
+                    <ul style="margin-bottom:30px">
+
+                        {{#searchExist}}
+                            {{#preIndex}}
+                                <li style="display:inline-block; margin: 0 6px;">
+                                    <a href="/generalforum?name={{name}}&keyword={{keyword}}&p={{preIndex}}" class="select_index">이전</a>
+                                </li>
+                            {{/preIndex}}
+                            {{^preIndex}}
+                                <li style="display:inline-block; margin: 0 6px;">
+                                    <a style="opacity: .5">이전</a>
+                                </li>
+                            {{/preIndex}}
+                            {{#pageIndexList}}
+                                <li style="display:inline-block; margin: 0 6px;">
+                                    <a href="/generalforum?name={{name}}&keyword={{keyword}}&p={{.}}" class="select_index" index-id="{{.}}">{{.}}</a>
+                                </li>
+                            {{/pageIndexList}}
+                            {{#nextIndex}}
+                                <li style="display:inline-block; margin: 0 6px;">
+                                    <a href="/generalforum?name={{name}}&keyword={{keyword}}&p={{nextIndex}}" class="select_index">다음</a>
+                                </li>
+                            {{/nextIndex}}
+                            {{^nextIndex}}
+                                <li style="display:inline-block; margin: 0 6px;"><a style="opacity: .5">다음</a></li>
+                            {{/nextIndex}}
+                        {{/searchExist}}
+
+                        {{^searchExist}}
+                            {{#preIndex}}
+                                <li style="display:inline-block; margin: 0 6px;">
+                                    <a href="/generalforum?p={{preIndex}}" class="select_index">이전</a>
+                                </li>
+                            {{/preIndex}}
+                            {{^preIndex}}
+                                <li style="display:inline-block; margin: 0 6px;"><a style="opacity: .5">이전</a></li>
+                            {{/preIndex}}
+                            {{#pageIndexList}}
+                                <li style="display:inline-block; margin: 0 6px;"><a href="/generalforum?p={{.}}" class="select_index">{{.}}</a></li>
+                            {{/pageIndexList}}
+                            {{#nextIndex}}
+                                <li style="display:inline-block; margin: 0 6px;">
+                                    <a href="/generalforum?p={{nextIndex}}" class="select_index">다음</a>
+                                </li>
+                            {{/nextIndex}}
+                            {{^nextIndex}}
+                                <li style="display:inline-block; margin: 0 6px;"><a style="opacity: .5">다음</a></li>
+                            {{/nextIndex}}
+                        {{/searchExist}}
+                    </ul>
+
+                    <form action="/generalforum" method="get">
+                        <select name="name">
+                            <option value="Title">제목</option>
+                            <option value="Content">내용</option>
+                            <option value="Writer">작성자</option>
+                        </select>
+                        <input type="text" name="keyword" value="">
+                        <button type="submit">검색</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+
+
+<script>
+
+    $("tbody > tr").on( "mouseover", function() {
+        $(this).css( "background-color", "#f4f4f4" );
+    });
+
+    $("tbody > tr").on( "mouseleave", function() {
+        $(this).css( "background-color", "white" );
+    });
+
+    $("td:nth-child(2)").on( "mouseover", function() {
+        $(this).css( "text-decoration-line", "underline" );
+    });
+    $("td:nth-child(2)").on( "mouseleave", function() {
+        $(this).css( "text-decoration-line", "none" );
+    }); // 게시글 목록 마우스 갖다 댈 시, 색 변환과 underline
+
+
+
+
+
+
+
+
+    var currentIndex = 1;
+
+    const url = new URL(window.location.href);
+
+    const urlParams = url.searchParams;
+
+    if(urlParams.has('p') == true){
+        currentIndex = urlParams.get('p');
+    }
+
+    var indexes = document.querySelectorAll(".select_index");
+
+    for (const index of indexes) {
+      const indexId = index.textContent
+
+      if(indexId==currentIndex){
+        index.style.color="#4b7fd8";
+		index.style.textDecoration="underline";
+      }
+    }
+
+
+</script>

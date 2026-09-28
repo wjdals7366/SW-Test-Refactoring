@@ -1,0 +1,180 @@
+부하 테스트: 1만 건 DB 갱신 요청으로 병렬 처리 성능 검증
+기능 검증: 이용권 차감, 강사 시간표 변경, 사용자 등록이 병렬로 수행되면서도 정상 처리되는지 확인
+예외 처리 검증: 각 동작별 예외처리로 오류 없이 수행되는지 확인
+경계값/제약조건 검증: 시간 겹치는 예약이 실제로 차단되는지 확인 (일종의 네거티브 테스트)
+모니터링/데이터 정합성 검증: 통계 그래프와 DB 값이 일치하는지 확인
+
+
+기존 테스트 검증
+- Spring Batch 부하 테스트
+- 기능검증 테스트
+
+추가 테스트
+- 각 동작별 예외처리 수행 확인
+- 경계값 / 제약조건 검증
+- 모니터랑 / 데이터 정합성 검증
+
+용어 정리
+VU (Virtual User) : 가상의 접속자 1명. 
+ex) VU = 10 -> 10명 동시접속을 의미
+Latency : 요청 후 응답까지 걸린 시간
+Throughput : 초당 일 처리 수 (RPS, requests per second)
+iterations : 총 테스팅 시도 횟수
+duration : 테스트 진행 시간
+maxDuration : 최대 응답 대기시간
+avg : 평균응답시간
+min : 최소응답시간
+max : 최대응답시간
+
+
+테스트 환경
+OS : Window 11 Pro; Build : 10.0.26200 빌드 26200
+Mainboard : Gigabyte H410M
+CPU : Intel Core i7-10700
+GPU : Nvidia GTX 1650
+RAM : 32GB DDR4
+
+
+부하 테스트
+사용 툴 : k6, Selenium
+테스트 판단 기준 : 더미값이 들어오는 것을 방지하기 위해 expected_response:true 인 값을 테스트 데이터로 수집
+
+진행한 테스트를 기록
+1번째) loadtest1.js
+목적 : 로그인 페이지 부하 테스트
+설계 
+- VU 동시접속자가 1초 간격으로 로그인 페이지 갱신 요청
+- 테스트 시간은 10초
+
+case 1
+VU : 100
+avg : 12.31ms
+min : 504.90µs
+med : 10.91ms
+max : 44.46ms
+failure rate : 0.00%
+
+case 2
+VU : 200
+avg : 19.65ms
+min : 504.20µs
+med : 19.27ms
+max :50.65ms
+failure rate : 4.45%
+
+case 3
+VU : 500
+avg : 36.65ms
+min : 503.9µs
+med : 22.67ms
+max : 170.46ms
+failure rate : 7.12%
+
+case 4
+VU : 1000
+avg : 59.87ms
+min : 502.8µs
+med : 46.74ms
+max : 329.53ms
+failure rate : 7.95%
+
+case 5
+VU : 5000
+avg : 1.44s
+min : 35.63ms
+med : 1.6s
+max : 2.23s
+failure rate : 16.28%
+
+case 6
+VU : 10000
+avg : 2.76s
+min : 111.29ms
+med : 3.54s
+max : 3.73s
+failure rate : 47.84%
+
+특이사항
+- 목표 동시접속자 한계인 1만명이 동시에 로그인 페이지 접속 시 응답 실패율이 47%에 육박
+
+
+2번째) loadtest2.js
+목적 : 짧은 시간 안에 대량으로 이용권을 등록하는 상황에서의 웹서버와 DB 동작 확인
+설계
+- 데이터 흐름도 : SpringMVC -> JPA -> HikariCP -> MySQL
+- 동시 다발적인 DB 쓰기 요청에서 웹 어플리케이션 계층 전체가 데이터 유실이나 과도하 지연 없이 버티는지 검증
+
+1차 테스트 결과
+Iteration Completed : 7243 / 10000
+maxDuration 10m에 도달하여 종료
+
+원인 분석
+- k6가 302 리다이렉트를 자동 추적하여 발생한 문제
+
+문제 코드 (경로 : GET /admin/bulk-pass)
+- modelAndView.addObject("bulkPasses", bulkPassService.getAllBulkPasses());
+
+코드 분석
+- 목록 조회 기능에 페이징이 없기 때문에 등록된 이용권을 불러올 때마다 HTML 페이지로 렌더링함
+
+k6는 기본적으로 302리다이렉트를 자동으로 따라감
+
+k6 흐름도
+1) POST로 INSERT
+2) 302 리다이렉트로 자동 추적
+3) GET으로 지금까지 쌓인 전체 목록 조회 + HTML 렌더링
+-> 목록 조회에 페이징 기능이 없기 때문에 Iteration이 진행될 수록 k6가 쌓인 목록 전체를 조회하고 렌더링 함
+
+∴ 기존 코드를 수정하여 페이징 기능 추가하고 2차 테스트 진행
+
+2차 테스트 결과
+Iteration Completed : 10000 / 10000
+1m 09.4s 경과 후 작업 종료
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+탐색적 테스팅 중 발견된 보완점
+- user의 password가 encrypt 되지 않음
+- dashboard 접속 시 Whitelabel Error page (400 bad request) 발생
+원인 : URL에 별도 파라미터 없이 접속하면 발생
+
+해결
+
+@GetMapping
+public ModelAndView home(ModelAndView modelAndView, @RequestParam("to") String toString) {
+    LocalDateTime to = LocalDateTimeUtils.parseDate(toString);
+
+위 구문에서 쿼리 파라미터 없이 /admin으로 접속하면 400 bad request 발생
+@RequestParam의 기본 값이 required = true 라서, 통계 차트 조회 기준일 to를 클라이언트가 반드시 넘겨줘야 하는 구조였음
+dashboard 진입점이 외부 파라미터에 의존하는 설계기 때문에 URL을 정확히 모르면 아예 접근이 불가능한 UX 결함
+
+@GetMapping
+public ModelAndView home(ModelAndView modelAndView, @RequestParam(value = "to", required = false) String toString) {
+    LocalDateTime to = (toString == null) ? LocalDateTime.now() : LocalDateTimeUtils.parseDate(toString);
+
+변경점
+1) required = true 를 1) required = false 로 변경해 파라미터 부재를 허용
+2) toString이 없을 경우 LocalDateTime.now() 를 기본 기준일로 적용
+
+개선 효과
+1) /admin 만 입력해도 대시보드가 즉시 랜더링 됨 (UX 결함인 URL진입장벽 제거)
+2) 기존기능 (날짜기준조회)은 그대로 유지 - 하위 호환성 보존
+3) 사용자가 날짜를 입력하지 않더라도 오늘 기준의 통계를 보여주는 관리자 도구로서의 사용경험 개선
+
+
+
+로그인 페이지에 Selenium을 사용해 각 케이스별 DB 영향도를 보여주는 테스트 진행 예정
+
+
