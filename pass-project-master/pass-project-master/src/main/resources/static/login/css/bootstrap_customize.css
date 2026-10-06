@@ -1,0 +1,13 @@
+.navbar-light .navbar-nav .nav-link {
+    color: rgba(0,0,0,.35);
+}
+.navbar-light .navbar-text {
+    color: rgba(0,0,0,.85);
+}
+nav {
+    width:100%;
+}
+.dropdown-menu {
+    min-width:100%;
+    font-size:0.9rem;
+}

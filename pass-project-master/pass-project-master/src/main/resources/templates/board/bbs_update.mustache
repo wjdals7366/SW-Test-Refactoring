@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+
+{{#msg}}
+    <script>
+        alert('{{msg}}')
+    </script>
+{{/msg}}
+
+<head>
+    {{>part/common}}
+    <link href="/static/css/learn.css" rel="stylesheet">
+    <title>Learn</title>
+</head>
+
+
+
+{{#bbs}}
+    <div class="container" style="margin-top:50px;">
+        <div class="row">
+            <form method="post" action="/generalforum/bbs_updateAction">
+                <table class="table table-striped" style="text-align:center; border:1px solid #dddddd">
+                    <thead></thead>
+                    <tbody>
+                    <tr>
+                        <td><input type="text" class="form-control" placeholder="글 제목"  name="Title" maxlength="50" value="{{title}}"></td>
+                    </tr>
+                    <tr>
+                        <td><textarea class="form-control" placeholder="글 내용"  name="Content" maxlength="2048" style="height:350px">{{bbs.content}}</textarea></td>
+                    </tr>
+                    <input type="hidden" name="bbs_id" value={{bbs.id}}>
+                    </tbody>
+                </table>
+                <input type="submit"  class="btn btn-primary pull-right" value="수정">
+            </form>
+        </div>
+    </div>
+{{/bbs}}

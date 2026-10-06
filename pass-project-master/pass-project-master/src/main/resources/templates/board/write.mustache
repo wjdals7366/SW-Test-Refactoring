@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+
+{{#msg}}
+    <script>
+        alert('{{msg}}')
+    </script>
+{{/msg}}
+
+{{^user}}
+    <script>
+        alert("로그인이 필요합니다")
+        location.href = '/login'
+    </script>
+{{/user}}
+
+<head>
+    {{>part/common}}
+</head>
+
+
+    <div class="container" style="margin-top:50px">
+        <div class="row">
+            <form method="post" action="/generalforum/writeAction">
+                <table class="table table-striped" style="text-align:center; border:1px solid #dddddd">
+                    <tbody>
+                    <tr>
+                        <td><input type="text" class="form-control" placeholder="글 제목"  name="title" maxlength="50" ></td>
+                    </tr>
+                    <tr>
+                        <td><textarea class="form-control" placeholder="글 내용"  name="content" maxlength="2048" style="height:350px" ></textarea></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div style="text-align:right;">
+                    <input type="submit" class="btn btn-outline-dark" value="글쓰기">
+                </div>
+            </form>
+        </div>
+    </div>
+
