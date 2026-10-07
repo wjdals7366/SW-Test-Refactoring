@@ -48,11 +48,15 @@ public class LoginController {
 
         userService.setUserGroup(user); // 그룹 생성
 
-        Map<String, String> userDtoMap = new HashMap<>();
-        userDtoMap.put("userId", userDto.getUserId());
-        userDtoMap.put("password", userDto.getPassword());
+        //user Id와 password의 원문이 노출되는 문제 구문
+        //Map<String, String> userDtoMap = new HashMap<>();
+        //userDtoMap.put("userId", userDto.getUserId());
+        //userDtoMap.put("password", userDto.getPassword());
+        //return new ResponseEntity<>(userDtoMap, HttpStatus.OK);
 
-        return new ResponseEntity<>(userDtoMap, HttpStatus.OK);
+        // 빈 구문을 둘려주는 방식으로 수정 (JSON 파일을 받지 않으면 오류처리되게 구현했기 때문임)
+        return new ResponseEntity<>(new HashMap<String, String>(), HttpStatus.OK);
+
     }
 
     @RequestMapping("/logout")

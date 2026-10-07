@@ -43,7 +43,7 @@ MYSQL : ver 8.0.46 for Win64 on x86_64
 테스트 판단 기준 : 더미값이 들어오는 것을 방지하기 위해 expected_response:true 인 값을 테스트 데이터로 수집
 
 진행한 테스트를 기록
-1번째) loadtest1.js
+1번째) 사용 스크립트 : loadtest1.js
 목적 : 로그인 페이지 부하 테스트
 설계 
 - VU (동시접속자)가 1초 간격으로 로그인 페이지 갱신 요청
@@ -102,7 +102,7 @@ failure rate : 47.84%
 - 목표 동시접속자 한계인 1만명이 동시에 로그인 페이지 접속 시 응답 실패율이 47%에 육박
 
 
-2번째) loadtest2.js
+2번째) 사용 스크립트 : loadtest2.js
 목적 : 짧은 시간 안에 대량으로 이용권을 등록하는 상황에서의 웹서버와 DB 동작 확인
 설계
 - 데이터 흐름도 : SpringMVC -> JPA -> HikariCP -> MySQL
@@ -139,7 +139,7 @@ Iteration Completed : 10000 / 10000
 
 
 
-3번째) bulkinsert.js, batch.js
+3번째) 사용 스크립트 : bulkinsert.js, batch.js
 테스트 목적 : 대량 등록된 이용권(bulk_pass, READY)을 Spring Batch {addPassesJob} 한 번으로 실제 이용권 · 예약 슬롯(pass, booking)으로 전개할 때, 건수가 늘어날수록 처리 시간이 어떻게 증가하는지 측정해 병목을 찾는 테스트
 
 설계
@@ -402,12 +402,46 @@ for 조건 findByUserId(...).size()	k+1 (조건은 반복 횟수보다 한 번 �
 합계						2k+2
 
 
+4번째) Selenium 자동화 테스트
+목적 : Selenium을 이용한 로그인, 회원가입 동작을 Selenium으로 검증하고, 화면에서 한 행동이 DB에 올바르게 반영됐는지 확인하고
+발견한 결함은 회귀 테스트로 남기는 자동화 프로세스 구축
+
+try_login.py
+- selenium 사용의 기초법을 학습하기 위해 작성한 코드
+
+
+
+
+
+
+
+
+
 
 
 탐색적 테스팅 중 발견된 보완점
-ET1 : user의 password가 encrypt 되지 않음
+ET1 : user의 Password가 hash화 하는 과정 검증
 ET2 : dashboard 접속 시 Whitelabel Error page (400 bad request) 발생
 원인 : URL에 별도 파라미터 없이 접속하면 발생
+
+ET1 
+DB에는 암호를 BCrypt Hash로 저장하지만 웹브라우저 응답 과정에서 암호 원문이 Console로그와 웹 action response에 그대로 노출됨
+-> 테스트를 진행하는 로컬 환경에서는 피해 가능성이 낮지만, 불필요한 민감정보를 그대로 반환하므로 수정 필요
+
+
+ET1 해결
+Action -> Response 노출 문제 해결
+- LoginController 응답 Map을 제거하고 빈 JSON 을 전달하여 숨김처리 완료
+
+Console Log에 남는 문제
+- login.mustache에 console.log(data)와 console.log(result)를 제거하여 해결
+
+
+TC 도출
+로그인 마다 새로운 세션을 Open하는지 확인
+-> JSSESIONID을 비교하여 검증
+
+
 
 
 
@@ -438,4 +472,7 @@ public ModelAndView home(ModelAndView modelAndView, @RequestParam(value = "to", 
 
 로그인 페이지에 Selenium을 사용해 각 케이스별 DB 영향도를 보여주는 테스트 진행 예정
 
+
+기능 테스트
+- admin 로그인에 실패해도 알럿이 안뜸
 

@@ -57,7 +57,8 @@
             userId : $("#logEmail").val(),
             password : $("#logPass").val()
          };
-        console.log(data);
+        //log에 password, userId를 남기는 구문임으로 제거
+        //console.log(data);
 
         $.ajax({
                 url : '/login/action',
@@ -66,7 +67,8 @@
                 contentType: "application/json; charset=utf-8",
                 dataType: 'json',
                 success : function(result) {
-                    console.log(result);
+                    //log에 password, userId를 남기는 구문임으로 제거
+                    //console.log(result);
                     location.href = "/passes";
                 },
                 error:function(error){

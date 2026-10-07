@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/pass-project-master.iml" filepath="$PROJECT_DIR$/.idea/pass-project-master.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/pass.main.iml" filepath="$PROJECT_DIR$/.idea/modules/pass.main.iml" />
     </modules>
   </component>
 </project>

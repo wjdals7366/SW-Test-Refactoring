@@ -4,12 +4,12 @@ import { check } from 'k6';
 export const options ={
     vus:1,
     iterations: 1,
-},
+};
 
 export default function () {
     const url = 'http://localhost:8081/job/launcher';
 
-    const payload = JSON.stringfy({
+    const payload = JSON.stringify({
         name: 'addPassesJob',
         jobParameters: {
             'run_id': String(Date.now())
@@ -17,7 +17,7 @@ export default function () {
     });
 
     const params = {
-        header: { 'Content-Type': 'application/json'},
+        headers: { 'Content-Type': 'application/json'},
         timeout: '300s',
     };
 
