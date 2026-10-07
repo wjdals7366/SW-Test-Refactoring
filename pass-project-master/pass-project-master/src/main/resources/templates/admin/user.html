@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<th:block th:replace="/admin/header :: header"></th:block>
+<body id="page-top">
+<!-- Page Wrapper -->
+<div id="wrapper">
+    <th:block th:replace="/admin/sidebar :: sidebar"></th:block>
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+        <!-- Main Content -->
+        <div id="content">
+            <!-- Begin Page Content -->
+            <div class="container-fluid">
+                <!-- Page Heading -->
+                <!-- Content Row -->
+                <div class="row">
+                    <!-- 사용자 목록 버튼 -->
+                    <div class="col-lg-12">
+                        <div class="card position-relative">
+                            <div class="card-header py-3">
+                                <h6 class="m-0 font-weight-bold text-primary">목록</h6>
+                            </div>
+                            <div class="card-body">
+                                <button id="userListBtn" class="btn btn-primary">사용자 목록</button>
+                                <button id="reservationListBtn" class="btn btn-primary">예약 목록</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <!-- Grow In Utility -->
+                    <div class="col-lg-8" id="userListDiv" style="display: none;">
+                        <div class="card position-relative">
+                            <div class="col" style="padding-top: 10px; padding-bottom: 20px">
+                                <div class="input-group">
+                                    <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-primary" type="button">
+                                            <i class="fas fa-search fa-sm"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card-header py-3">
+                                <h6 th:text="'전체 사용자 ' + ${userNum} + '명'" class="m-0 font-weight-bold text-primary"></h6>
+                            </div>
+
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered" width="100%" cellspacing="0" style="border-collapse: collapse;">
+                                        <thead>
+                                        <tr>
+                                            <th>아이디</th>
+                                            <th class="admin_board_head">이름</th>
+                                            <th class="admin_board_head">현재상태</th>
+                                            <th class="admin_board_head">전화번호</th>
+                                            <th>가입일</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr th:each="vo : ${userInfo}">
+                                            <td th:text="${vo.userId}"></td>
+                                            <td th:text="${vo.userName}"></td>
+                                            <td th:text="${vo.status}"></td>
+                                            <td th:text="${vo.phone}"></td>
+                                            <td th:text="${vo.date}"></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 예약 목록 -->
+                    <div class="col-lg-8" id="reservationListDiv" style="display: none;">
+                        <div class="card position-relative">
+                            <div class="card-header py-3">
+                                <h6 class="m-0 font-weight-bold text-primary">예약 목록</h6>
+                            </div>
+                            <div class="card-body">
+                                <!-- 예약 목록 내용 -->
+                                <div class="table-responsive">
+                                    <table class="table table-bordered" width="100%" cellspacing="0" style="border-collapse: collapse;">
+                                        <thead>
+                                            <tr>
+                                                <th>수업일</th>
+                                                <th>예약 번호</th>
+                                                <th>강사</th>
+                                                <th class="admin_board_head">회원ID</th>
+                                                <th class="admin_board_head">회원명</th>
+                                                <th class="admin_board_head">시작 시간</th>
+                                                <th class="admin_board_head">종료 시간</th>
+                                                <th class="admin_board_head">수업 종료</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr th:each="vo : ${bookingInfo}">
+                                                <td th:text="${vo.date}"></td>
+                                                <td th:text="${vo.bookingSeq}"></td>
+                                                <td th:text="${vo.instructorName}"></td>
+                                                <td th:text="${vo.userId}"></td>
+                                                <td th:text="${vo.userName}"></td>
+                                                <td th:text="${vo.startedAt}"></td>
+                                                <td th:text="${vo.endedAt}"></td>
+                                                <td>
+                                                    <button class="end-class-button">수업 종료</button>
+                                                </td>
+
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <!-- Fade In Utility -->
+    </div>
+</div>
+
+
+</body>
+
+<script>
+    // 사용자 목록 버튼 클릭 시
+    document.getElementById("userListBtn").addEventListener("click", function() {
+        document.getElementById("userListDiv").style.display = "block";
+        document.getElementById("reservationListDiv").style.display = "none";
+    });
+
+    // 예약 목록 버튼 클릭 시
+    document.getElementById("reservationListBtn").addEventListener("click", function() {
+        document.getElementById("userListDiv").style.display = "none";
+        document.getElementById("reservationListDiv").style.display = "block";
+    });
+
+
+    document.querySelector('.end-class-button').addEventListener('click', function(event) {
+        const button = $(this);
+
+        // 버튼의 부모 행을 찾습니다.
+        const row = button.closest('tr');
+
+        // 행 내의 각 데이터 셀을 선택하여 데이터를 가져옵니다.
+        const bookingSeq = row.find('td:nth-child(2)').text();
+        const userId = row.find('td:nth-child(4)').text();
+
+
+        console.log("Booking Sequence: " + bookingSeq);
+        console.log("User ID: " + userId);
+
+        $.ajax({
+            type: 'POST',
+            url: "http://localhost:8080/passes/end_class",
+            data: JSON.stringify({userId: userId, bookingSeq: bookingSeq}),
+            contentType: "application/json; charset=utf-8",
+            success: function(response) {
+                alert("수업이 종료되었습니다.");
+            },
+            error: function() {
+                alert("수업 종료 요청 실패.");
+            }
+        });
+});
+</script>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

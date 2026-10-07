@@ -1,0 +1,92 @@
+<head>
+    <meta charset="UTF-8">
+    <title>로그인</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@700&family=Quicksand:wght@700&display=swap" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="/login/css/login.css">
+</head>
+
+
+
+    <div class="center-wrap">
+        <div class="section text-center">
+            <h4 class="mb-4 pb-3">Sign Up</h4>
+
+            <form name="joinForm">
+                <div class="form-group">
+                    <input type ="text" class="form-style" placeholder="아이디" name ="userId" maxlength='20' onkeyup="checkEnter(event)">
+                    <p style="text-align:left; color:red; margin-left:50px; font-size:15px"></p>
+                </div>
+
+                <div class="form-group">
+                    <input type ="password" class="form-style" placeholder="비밀번호" name ="password" maxlength='20' onkeyup="checkEnter(event)">
+                    <p style="text-align:left; color:red; margin-left:50px; font-size:15px"></p>
+                </div>
+
+                <div class="form-group">
+                    <input type ="text" class="form-style" placeholder="이름" name ="userName" maxlength='20' onkeyup="checkEnter(event)">
+                </div>
+
+                <div class="form-group">
+                    <input type="tel" class="form-style" placeholder="전화번호" name="phone" maxlength="20" onkeyup="checkEnter(event)">
+                </div>
+
+                <div class="form-group">
+                    <input type ="email" class="form-style" placeholder="이메일" name ="eMail" maxlength='20' onkeyup="checkEnter(event)">
+                </div>
+
+                <div class="form-group">
+                    <input type ="email" class="form-style" placeholder="카카오 계정 ID" name ="kaKaoId" maxlength='20' onkeyup="checkEnter(event)">
+                </div>
+
+                <input type="button" class="btn mt-4" value="회원가입" onclick="sub()">
+            </form>
+        </div>
+    </div>
+
+
+<script>
+    function checkEnter(event) {
+            if (event.keyCode === 13) {
+                sub();
+            }
+        }
+
+    function sub(){
+        let formData = $("form[name=joinForm]").serialize();
+
+        console.log(formData);
+
+        $.ajax({
+                url : '/join/action',
+                type : 'POST',
+                data : formData,
+                dataType: 'json',
+                success : function(result) {
+                    location.href = "/login";
+                },
+                error:function(error){
+                    if(error.responseJSON.msg){
+                        alert(error.responseJSON.msg);
+                    }
+
+                    if (error.responseJSON) {
+                        if (error.responseJSON.pw_error) {  // 비밀번호 에러가 발생할 경우 출력
+                            $("input[name='password']").siblings("p").text(error.responseJSON.pw_error);
+                        }else {
+                            $("input[name='password']").siblings("p").empty();
+                        }
+
+                        if (error.responseJSON.id_error) {  // id 에러가 발생할 경우 출력
+                            $("input[name='userId']").siblings("p").text(error.responseJSON.id_error);
+                        }else {
+                            $("input[name='userId']").siblings("p").empty();
+                        }
+                    }
+
+                }
+            });
+    }
+
+</script>

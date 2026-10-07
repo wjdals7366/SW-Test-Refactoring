@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>달력 예시</title>
+    <link href="/pass/css/calendar.css" rel="stylesheet"/>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+<div class="sec_cal">
+    <div class="cal_nav">
+        <a href="javascript:;" class="nav-btn go-prev">prev</a>
+        <div class="month"></div>
+        <a href="javascript:;" class="nav-btn go-next">next</a>
+    </div>
+    <input hidden name="passSeq" th:value="${passSeq}">
+    <input hidden name="userId" th:value="${userId}">
+    <div class="cal_wrap">
+        <div class="days">
+            <div class="day">MON</div>
+            <div class="day">TUE</div>
+            <div class="day">WED</div>
+            <div class="day">THU</div>
+            <div class="day">FRI</div>
+            <div class="day">SAT</div>
+            <div class="day">SUN</div>
+        </div>
+        <div class="dates"></div>
+        <div class="reservation-list">
+
+        </div>
+    </div>
+</div>
+
+
+
+<script src="/pass/js/calendar.js"></script>
+
+</body>
+</html>
