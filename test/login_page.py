@@ -5,7 +5,7 @@ from selenium.webdriver.support import expected_conditions as EC
 # import time
 
 user_id = "wjdals5798"
-user_pw = "asd123!!"
+user_pw = "dkskaksk123!!"
 
 driver = webdriver.Chrome()         # Chrome 드라이버 입력
 driver.get("http://localhost:8080/login")       # 로그인 화면으로 이동
@@ -24,11 +24,9 @@ alert = WebDriverWait(driver, 5).until(EC.alert_is_present())
 print(alert.text)
 text = alert.text
 alert.accept()
-assert text == "비밀번호가 일치하지 않습니다"
+
+expected = "비밀번호가 일치하지 않습니다."
+assert text == expected, f"기대: {expected} /  실제: {text}"
 print("통과:", text)
 
-
-# time.sleep(2) WebDriverWait 로 고도화
-#WebDriverWait(driver, 5).until(EC.url_contains("/passes"))
-#print(driver.current_url)
 driver.quit()
