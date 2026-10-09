@@ -1,32 +1,21 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-# import time
-
-user_id = "wjdals5798"
-user_pw = "dkskaksk123!!"
-
-driver = webdriver.Chrome()         # Chrome 드라이버 입력
-driver.get("http://localhost:8080/login")       # 로그인 화면으로 이동
 
 
-# 1)아이디 입력칸을 찾아서 아이디를 입력
-driver.find_element(By.ID, "logEmail").send_keys(user_id)
-
-# 2) 비밀번호 입력칸을 찾아서 비밀번호를 입력 
-driver.find_element(By.ID, "logPass").send_keys(user_pw)
-
-# 3) 로그인 버튼을 찾아서 클릭
-driver.find_element(By.CSS_SELECTOR, "input[type='button'][value='submit']").click()
-
-alert = WebDriverWait(driver, 5).until(EC.alert_is_present())
-print(alert.text)
-text = alert.text
-alert.accept()
-
-expected = "비밀번호가 일치하지 않습니다."
-assert text == expected, f"기대: {expected} /  실제: {text}"
-print("통과:", text)
-
-driver.quit()
+class LoginPage:
+  USER_ID = (By.ID, "logEmail")
+  PASSWORD = (By.ID, "logPass")
+  SUBMIT = (By.CSS_SELECTOR, "input[type='button'][value='submit']")
+  
+  
+  def __init__(self, driver):
+    self.driver = driver
+    
+  
+  def open(self):
+    self.driver.get("http://localhost:8080/login")
+    
+  def login(self, user_id, password):
+    self.driver.find_element(*self.USER_ID).send_keys(user_id)
+    self.driver.find_element(*self.PASSWORD).send_keys(password)
+    self.driver.find_element(*self.SUBMIT).click()

@@ -423,6 +423,11 @@ try_login_2.py
 - login_page.py로 로그인 기능 테스트를 Object로 분리하여 위 문제 해결
 
 
+pytest 사용 이유
+- 여러 테스트케이스를 한 파일로 실행하여 리소스 낭비를 줄일 수 있음
+
+test_login_practice.py
+- 존재하지 않는 ID 입력 케이스, 잘못된 Password 입력 케이스 테스트를 한 파일로 작성
 
 
 

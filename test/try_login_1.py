@@ -2,7 +2,9 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+
 import time
+
 
 user_id = "wjdals5798"
 user_pw = "asd123!!"
@@ -28,7 +30,7 @@ driver.find_element(By.CSS_SELECTOR, "input[type='button'][value='submit']").cli
 # print("통과:", text)
 
 
-time.sleep(2)# WebDriverWait 로 고도화
+time.sleep(2)
 WebDriverWait(driver, 5).until(EC.url_contains("/passes"))
 print(driver.current_url)
 driver.quit()
