@@ -256,5 +256,5 @@ python -m pytest -v tests/test_api_1.py     # 파일 하나
 
 ## 문서
 
-- [테스트 수행 보고서 (docx)](main/Sport예약메이트_테스트보고서.docx)
-- [테스트 케이스 (xlsx)](main/Sport예약메이트_테스트케이스.xlsx)
+- [테스트 수행 보고서 (docx)](Sport%EC%98%88%EC%95%BD%EB%A9%94%EC%9D%B4%ED%8A%B8_%ED%85%8C%EC%8A%A4%ED%8A%B8%EB%B3%B4%EA%B3%A0%EC%84%9C.docx)
+- [테스트 케이스 (xlsx)](Sport%EC%98%88%EC%95%BD%EB%A9%94%EC%9D%B4%ED%8A%B8_%ED%85%8C%EC%8A%A4%ED%8A%B8%EC%BC%80%EC%9D%B4%EC%8A%A4.xlsx)
