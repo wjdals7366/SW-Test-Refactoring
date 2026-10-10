@@ -6,8 +6,8 @@ import time
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from login_page import LoginPage
-from join_page import JoinPage
+from pages.login_page import LoginPage
+from pages.join_page import JoinPage
 
 PASSWORD = "asd123!!"
 
