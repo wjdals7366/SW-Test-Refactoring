@@ -1,5 +1,6 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 
 
 class LoginPage:
@@ -19,3 +20,7 @@ class LoginPage:
     self.driver.find_element(*self.USER_ID).send_keys(user_id)
     self.driver.find_element(*self.PASSWORD).send_keys(password)
     self.driver.find_element(*self.SUBMIT).click()
+    
+  def login_with_enter(self, user_id, password):
+    self.driver.find_element(*self.USER_ID).send_keys(user_id)
+    self.driver.find_element(*self.PASSWORD).send_keys(password + Keys.ENTER)

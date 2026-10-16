@@ -2,7 +2,7 @@ spring:
     application:
         name: pass-web
     datasource:
-        url: jdbc:mysql://localhost:3306/firstproject_db?serverTimezone=UTC&useLegacyDatetimeCode=false&rewriteBatchedStatements=true
+        url: jdbc:mysql://localhost:3306/firstproject_db?serverTimezone=Asia/Seoul&useLegacyDatetimeCode=false&rewriteBatchedStatements=true
         username: root
         password: 525873
         driver-class-name: com.mysql.cj.jdbc.Driver
