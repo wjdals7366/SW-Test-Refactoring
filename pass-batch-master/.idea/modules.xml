@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/pass-batch-master.iml" filepath="$PROJECT_DIR$/.idea/pass-batch-master.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/pass-batch.main.iml" filepath="$PROJECT_DIR$/.idea/modules/pass-batch.main.iml" />
     </modules>
   </component>
 </project>

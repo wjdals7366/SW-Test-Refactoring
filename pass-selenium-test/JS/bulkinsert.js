@@ -22,9 +22,9 @@ export default function () {
   const params = {
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
-      'Authorization': 'Basic ' + credentials,
+      Authorization: 'Basic ' + credentials,
     },
-    redirects: 0,   // ← 추가: 302를 자동으로 따라가지 않음
+    redirects: 0, // ← 추가: 302를 자동으로 따라가지 않음
   };
 
   const res = http.post(url, payload, params);
